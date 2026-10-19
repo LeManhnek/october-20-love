@@ -1,0 +1,791 @@
+:root {
+  --bg-void: #040104;
+  --bg-wine: #1b030c;
+  --ruby-core: #8f0024;
+  --ruby-bright: #ff1e56;
+  --blush-pink: #ffb3c6;
+  --gold-champagne: #f3d292;
+  --gold-bright: #fff0c2;
+  --gold-deep: #b38332;
+  --text-ivory: #fff9fb;
+  --text-soft: #e2c6cf;
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
+  --font-sans: 'Be Vietnam Pro', -apple-system, sans-serif;
+  --font-script: 'Dancing Script', cursive;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+html, body {
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background-color: var(--bg-void);
+  background-image:
+    radial-gradient(circle at 50% 25%, #2b0514 0%, transparent 60%),
+    radial-gradient(circle at 50% 85%, #1c0b05 0%, var(--bg-void) 80%);
+  color: var(--text-ivory);
+  font-family: var(--font-sans);
+}
+
+#fx-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.aurora {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(110px);
+  pointer-events: none;
+  z-index: 0;
+  mix-blend-mode: screen;
+}
+
+.aurora-1 {
+  width: 480px;
+  height: 480px;
+  background: radial-gradient(circle, rgba(201, 24, 74, 0.35), transparent 70%);
+  top: -10%;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: auroraFloat 10s ease-in-out infinite alternate;
+}
+
+.aurora-2 {
+  width: 380px;
+  height: 380px;
+  background: radial-gradient(circle, rgba(243, 210, 146, 0.22), transparent 70%);
+  bottom: -5%;
+  left: 35%;
+  animation: auroraFloat 14s ease-in-out infinite alternate-reverse;
+}
+
+.aurora-3 {
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle, rgba(143, 0, 36, 0.3), transparent 70%);
+  top: 40%;
+  right: 10%;
+}
+
+.vignette {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background: radial-gradient(circle at center, transparent 55%, rgba(2, 0, 3, 0.85) 100%);
+}
+
+@keyframes auroraFloat {
+  0% { transform: translate(-50%, 0) scale(1); }
+  100% { transform: translate(-45%, 25px) scale(1.15); }
+}
+
+/* Thanh điều khiển nổi */
+.top-controls {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 100;
+  display: flex;
+  gap: 10px;
+}
+
+.glass-pill {
+  background: rgba(25, 4, 14, 0.65);
+  border: 1px solid rgba(243, 210, 146, 0.4);
+  color: var(--gold-champagne);
+  padding: 9px 16px;
+  border-radius: 999px;
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s ease;
+}
+
+.glass-pill:hover {
+  border-color: var(--gold-bright);
+  box-shadow: 0 0 20px rgba(243, 210, 146, 0.35);
+  transform: translateY(-1px);
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #888;
+  transition: all 0.3s ease;
+}
+
+.pulse-dot.playing {
+  background: #ff2a6d;
+  box-shadow: 0 0 10px #ff2a6d;
+  animation: dotBlink 1.2s infinite;
+}
+
+@keyframes dotBlink {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.6; }
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Sân khấu chính */
+.stage {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 16px 36px;
+}
+
+.scene {
+  display: none;
+  width: 100%;
+  max-width: 600px;
+  text-align: center;
+  margin: auto 0;
+  opacity: 0;
+  transform: scale(0.96) translateY(20px);
+  transition: opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1), transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.scene.active {
+  display: block;
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+/* Thẻ kính & Typography */
+.glass-card {
+  background: linear-gradient(160deg, rgba(45, 7, 22, 0.55) 0%, rgba(12, 2, 7, 0.78) 100%);
+  border: 1px solid rgba(243, 210, 146, 0.28);
+  border-radius: 28px;
+  padding: 42px 26px;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.75), inset 0 0 35px rgba(243, 210, 146, 0.06);
+}
+
+.crown-badge {
+  display: inline-block;
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 3.5px;
+  color: var(--gold-champagne);
+  border: 1px solid rgba(243, 210, 146, 0.35);
+  background: rgba(243, 210, 146, 0.08);
+  padding: 6px 16px;
+  border-radius: 999px;
+  margin-bottom: 14px;
+}
+
+.hero-title {
+  font-family: var(--font-serif);
+  font-size: clamp(2.1rem, 6.5vw, 3.2rem);
+  font-weight: 600;
+  line-height: 1.2;
+  background: linear-gradient(180deg, #ffffff 0%, var(--gold-bright) 55%, var(--gold-champagne) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 6px 25px rgba(243, 210, 146, 0.28));
+  margin-bottom: 16px;
+}
+
+.section-title {
+  font-family: var(--font-serif);
+  font-size: clamp(1.65rem, 5.2vw, 2.4rem);
+  font-weight: 600;
+  color: var(--gold-bright);
+  text-shadow: 0 4px 20px rgba(243, 210, 146, 0.35);
+  margin-bottom: 14px;
+}
+
+.hero-subtitle, .garden-caption {
+  color: var(--text-soft);
+  font-size: 0.96rem;
+  line-height: 1.65;
+  max-width: 480px;
+  margin: 0 auto 22px;
+  font-weight: 300;
+}
+
+.gold-text {
+  color: var(--gold-champagne);
+  font-weight: 600;
+}
+
+.hint-text {
+  font-size: 0.8rem;
+  color: rgba(243, 210, 146, 0.7);
+  font-style: italic;
+  margin-top: 18px;
+}
+
+/* Nút bấm Hoàng Gia */
+.cta-wrapper {
+  position: relative;
+  display: inline-block;
+  margin-top: 6px;
+}
+
+.btn-aura {
+  position: absolute;
+  inset: -6px;
+  background: linear-gradient(90deg, #ff1e56, #f3d292, #ff1e56);
+  border-radius: 999px;
+  filter: blur(14px);
+  opacity: 0.65;
+  animation: pulseGlow 2.5s infinite;
+}
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.45; transform: scale(0.98); }
+  50% { opacity: 0.85; transform: scale(1.04); }
+}
+
+.royal-btn {
+  position: relative;
+  background: linear-gradient(135deg, #9e0028 0%, #520014 55%, #8a5a19 100%);
+  border: 1.5px solid var(--gold-champagne);
+  color: var(--gold-bright);
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0.6px;
+  padding: 14px 30px;
+  border-radius: 999px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), inset 0 1px 12px rgba(255, 240, 194, 0.35);
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.royal-btn:hover, .royal-btn:active {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 0 35px rgba(243, 210, 146, 0.55), inset 0 1px 18px rgba(255, 240, 194, 0.6);
+  border-color: #ffffff;
+}
+
+.secondary-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(243, 210, 146, 0.4);
+  color: var(--gold-champagne);
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  padding: 13px 20px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.secondary-btn:hover {
+  background: rgba(243, 210, 146, 0.15);
+}
+
+.scene-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ================= SCENE VIDEO: KHUNG RẠP CHIẾU PHIM HOÀNG GIA ================= */
+.video-scene-layout {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Ánh sáng hào quang background tinh tế phía sau video */
+.video-ambient-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(92vw, 480px);
+  height: min(62vh, 480px);
+  background: radial-gradient(
+    circle,
+    rgba(255, 30, 86, 0.3) 0%,
+    rgba(243, 210, 146, 0.2) 40%,
+    rgba(143, 0, 36, 0.12) 65%,
+    transparent 85%
+  );
+  filter: blur(45px);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  animation: videoGlowPulse 4s ease-in-out infinite alternate;
+}
+
+@keyframes videoGlowPulse {
+  0% { transform: translate(-50%, -50%) scale(0.96); opacity: 0.75; }
+  100% { transform: translate(-50%, -50%) scale(1.06); opacity: 1; }
+}
+
+.royal-cinema-frame {
+  position: relative;
+  z-index: 1;
+  margin: 8px auto 14px;
+  padding: 10px;
+  max-width: 100%;
+  width: fit-content;
+  background: linear-gradient(150deg, rgba(38, 5, 17, 0.85) 0%, rgba(12, 2, 7, 0.95) 100%);
+  border: 1.5px solid rgba(243, 210, 146, 0.55);
+  border-radius: 20px;
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.85),
+    0 0 35px rgba(255, 30, 86, 0.22),
+    0 0 15px rgba(243, 210, 146, 0.16),
+    inset 0 0 20px rgba(243, 210, 146, 0.08);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.luxury-video {
+  display: block;
+  max-width: min(84vw, 420px);
+  max-height: min(48vh, 460px);
+  width: auto;
+  height: auto;
+  border-radius: 12px;
+  background: #000000;
+  margin: 0 auto;
+  object-fit: contain;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7);
+}
+
+.video-controls-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.mini-glass-btn {
+  background: rgba(243, 210, 146, 0.12);
+  border: 1px solid rgba(243, 210, 146, 0.45);
+  color: var(--gold-bright);
+  padding: 7px 16px;
+  border-radius: 999px;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.mini-glass-btn:hover {
+  background: rgba(243, 210, 146, 0.25);
+  border-color: #fff0c2;
+  transform: translateY(-1px);
+}
+
+.video-fallback {
+  padding: 28px 20px;
+  max-width: 360px;
+  color: var(--gold-bright);
+  background: rgba(60, 8, 25, 0.6);
+  border: 1px dashed var(--gold-champagne);
+  border-radius: 12px;
+  margin: 10px auto;
+}
+
+.fallback-sub {
+  margin-top: 8px;
+  font-size: 0.85rem;
+  color: var(--text-soft);
+  line-height: 1.5;
+}
+
+/* ================= SCENE 2: LỒNG KÍNH PHA LÊ & HOA HỒNG 3D ================= */
+.holo-dome-container {
+  position: relative;
+  width: 310px;
+  margin: 8px auto 18px;
+  cursor: grab;
+}
+
+.dome-halo {
+  position: absolute;
+  top: 42%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 280px;
+  height: 280px;
+  background: radial-gradient(circle, rgba(255, 30, 86, 0.38) 0%, rgba(243, 210, 146, 0.15) 45%, transparent 72%);
+  border-radius: 50%;
+  filter: blur(20px);
+  pointer-events: none;
+}
+
+.crystal-dome {
+  position: relative;
+  width: 300px;
+  height: 380px;
+  margin: 0 auto;
+  border-radius: 150px 150px 14px 14px;
+  border: 1.5px solid rgba(255, 240, 194, 0.32);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 180, 200, 0.03) 40%,
+    rgba(243, 210, 146, 0.07) 100%
+  );
+  box-shadow:
+    inset 0 0 45px rgba(255, 30, 86, 0.18),
+    inset 0 2px 20px rgba(255, 255, 255, 0.25),
+    0 20px 50px rgba(0, 0, 0, 0.75);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dome-reflection {
+  position: absolute;
+  top: 22px;
+  left: 24px;
+  width: 38px;
+  height: 240px;
+  border-radius: 50%;
+  border-left: 2.5px solid rgba(255, 255, 255, 0.32);
+  transform: rotate(-7deg);
+  pointer-events: none;
+  z-index: 4;
+}
+
+#rose-canvas {
+  width: 300px;
+  height: 380px;
+  display: block;
+  z-index: 2;
+}
+
+.pedestal {
+  width: 320px;
+  height: 28px;
+  margin: -2px auto 0;
+  background: linear-gradient(90deg, #1f1109 0%, #7d5626 30%, #f3d292 50%, #7d5626 70%, #1f1109 100%);
+  border-radius: 8px 8px 14px 14px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pedestal-plaque {
+  font-size: 0.65rem;
+  letter-spacing: 2.5px;
+  color: #2b1405;
+  font-weight: 700;
+}
+
+/* ================= SCENE 3: PHONG THƯ HOÀNG GIA ================= */
+.letter-layout {
+  position: relative;
+  width: 100%;
+}
+
+.envelope-stage {
+  margin: 30px auto;
+  display: flex;
+  justify-content: center;
+  perspective: 1000px;
+}
+
+.luxury-envelope {
+  position: relative;
+  width: 300px;
+  height: 200px;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  transition: transform 0.4s ease;
+}
+
+.luxury-envelope:hover {
+  transform: translateY(-6px) rotateX(4deg);
+}
+
+.env-back {
+  position: absolute;
+  inset: 0;
+  background: #3d0518;
+  border-radius: 12px;
+  border: 1.5px solid var(--gold-champagne);
+  box-shadow: 0 22px 50px rgba(0, 0, 0, 0.75);
+}
+
+.env-letter-peek {
+  position: absolute;
+  top: 14px;
+  left: 18px;
+  right: 18px;
+  height: 160px;
+  background: linear-gradient(180deg, #fffdf9 0%, #f7ebd9 100%);
+  border: 1px solid #d9b87c;
+  border-radius: 6px;
+  padding: 22px;
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  color: #5c0923;
+  z-index: 2;
+  transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.25s;
+}
+
+.env-side-left {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #5e0925 0%, #3d0518 100%);
+  clip-path: polygon(0 0, 52% 52%, 0 100%);
+  z-index: 3;
+  border-radius: 12px;
+  filter: drop-shadow(1px 0 3px rgba(0, 0, 0, 0.25));
+}
+
+.env-side-right {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(225deg, #5e0925 0%, #3d0518 100%);
+  clip-path: polygon(100% 0, 48% 52%, 100% 100%);
+  z-index: 3;
+  border-radius: 12px;
+  filter: drop-shadow(-1px 0 3px rgba(0, 0, 0, 0.25));
+}
+
+.env-bottom {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, #4b071d 0%, #6e0d2d 100%);
+  clip-path: polygon(0 100%, 50% 48%, 100% 100%);
+  border-bottom: 1.5px solid var(--gold-champagne);
+  z-index: 4;
+  border-radius: 12px;
+  filter: drop-shadow(0 -2px 4px rgba(0, 0, 0, 0.35));
+}
+
+.env-top-flap {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, #7c0f33 0%, #4b071d 100%);
+  clip-path: polygon(0 0, 50% 56%, 100% 0);
+  transform-origin: top center;
+  transition: transform 0.75s cubic-bezier(0.4, 0, 0.2, 1), z-index 0s linear;
+  z-index: 5;
+  border-radius: 12px;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.45));
+}
+
+.royal-wax-seal {
+  position: absolute;
+  top: 54%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #fff0c2 0%, #d8a648 55%, #7c5310 100%);
+  color: #4b071d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6), 0 0 20px rgba(243, 210, 146, 0.5);
+  z-index: 6;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.45s ease;
+}
+
+.seal-ring {
+  position: absolute;
+  inset: 5px;
+  border: 1px dashed rgba(75, 7, 29, 0.45);
+  border-radius: 50%;
+}
+
+.luxury-envelope.open .env-top-flap {
+  transform: rotateX(180deg);
+  z-index: 1;
+  transition: transform 0.75s cubic-bezier(0.4, 0, 0.2, 1), z-index 0s linear 0.38s;
+}
+
+.luxury-envelope.open .royal-wax-seal {
+  transform: translate(-50%, -50%) scale(1.6);
+  opacity: 0;
+}
+
+.luxury-envelope.open .env-letter-peek {
+  transform: translateY(-90px);
+}
+
+.letter-modal-wrapper {
+  position: relative;
+  width: 100%;
+  animation: letterReveal 0.85s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.royal-letter-card {
+  position: relative;
+  background: linear-gradient(180deg, #fffdf9 0%, #f9efe2 100%);
+  color: #2d0714;
+  border: 1.5px solid var(--gold-deep);
+  border-radius: 16px;
+  padding: 22px 20px 18px;
+  text-align: left;
+  box-shadow: 0 20px 55px rgba(0, 0, 0, 0.8), 0 0 30px rgba(243, 210, 146, 0.2);
+}
+
+@keyframes letterReveal {
+  from { opacity: 0; transform: translateY(24px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.corner-ornament {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--gold-deep);
+  pointer-events: none;
+  z-index: 5;
+}
+.corner-ornament.tl { top: 6px; left: 6px; border-right: none; border-bottom: none; }
+.corner-ornament.tr { top: 6px; right: 6px; border-left: none; border-bottom: none; }
+.corner-ornament.bl { bottom: 6px; left: 6px; border-right: none; border-top: none; }
+.corner-ornament.br { bottom: 6px; right: 6px; border-left: none; border-top: none; }
+
+.letter-header {
+  border-bottom: 1px solid rgba(143, 0, 36, 0.2);
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+}
+
+.letter-date {
+  display: block;
+  font-size: 0.72rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #8f0024;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.letter-greeting {
+  font-family: var(--font-serif);
+  font-size: clamp(1.2rem, 3.8vw, 1.45rem);
+  color: #4b071d;
+  line-height: 1.3;
+}
+
+.letter-body {
+  min-height: 100px;
+}
+
+.letter-body p {
+  font-size: clamp(0.85rem, 2.3vw, 0.92rem);
+  line-height: 1.62;
+  color: #360818;
+  margin-bottom: 8px;
+  user-select: text;
+}
+
+.letter-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 10px;
+  border-top: 1px dashed rgba(143, 0, 36, 0.22);
+  padding-top: 8px;
+  gap: 10px;
+}
+
+.text-link-btn {
+  background: rgba(143, 0, 36, 0.08);
+  border: 1px solid rgba(143, 0, 36, 0.25);
+  color: #8f0024;
+  font-size: 0.75rem;
+  padding: 5px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  font-family: var(--font-sans);
+}
+
+.text-link-btn:hover {
+  background: rgba(143, 0, 36, 0.16);
+  border-color: #8f0024;
+}
+
+.signature-block {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.sig-caption {
+  font-size: 0.78rem;
+  color: #6b293e;
+}
+
+.sig-name {
+  font-family: var(--font-script);
+  font-size: 1.7rem;
+  color: #8f0024;
+  line-height: 1.1;
+}
+
+.mt-actions {
+  margin-top: 16px;
+  margin-bottom: 6px;
+  text-align: center;
+}
+
+/* ================= SCENE 4: TRÁI TIM 3D & PHÁO HOA ================= */
+.heart-nebula-wrap {
+  width: 240px;
+  height: 220px;
+  margin: 0 auto 10px;
+  cursor: pointer;
+  position: relative;
+}
+
+#heart-3d-canvas {
+  width: 240px;
+  height: 220px;
+  display: block;
+}
+
+.glow-gold {
+  filter: drop-shadow(0 0 25px rgba(255, 30, 86, 0.45));
+}

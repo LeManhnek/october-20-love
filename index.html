@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>20/10 — Món Quà Ánh Sáng Dành Riêng Cho Em</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400;1,600&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Canvas Toàn Màn Hình: Bụi sao, Cánh hoa rơi, Phép thuật theo ngón tay & Pháo hoa Trái Tim -->
+  <canvas id="fx-canvas"></canvas>
+
+  <!-- Luồng cực quang chiều sâu -->
+  <div class="aurora aurora-1"></div>
+  <div class="aurora aurora-2"></div>
+  <div class="aurora aurora-3"></div>
+  <div class="vignette"></div>
+
+  <!-- Thanh điều khiển nổi góc trên -->
+  <header class="top-controls">
+    <button id="music-toggle" class="glass-pill" aria-label="Bật/Tắt nhạc nền">
+      <span class="pulse-dot" id="music-dot"></span>
+      <span id="music-label">♪ Nhạc: Tắt</span>
+    </button>
+    <button id="replay-btn" class="glass-pill hidden" aria-label="Xem lại từ đầu">
+      <span>↺ Xem lại</span>
+    </button>
+  </header>
+
+  <main class="stage">
+    <!-- ================= SCENE 1: MỞ ĐẦU ================= -->
+    <section id="scene-1" class="scene active">
+      <div class="glass-card intro-card">
+        <div class="crown-badge">✦ SPECIAL GIFT • 20 / 10 ✦</div>
+        <h1 id="intro-greeting" class="hero-title">
+          Anh có một phép màu muốn dành riêng cho em…
+        </h1>
+        <p class="hero-subtitle">
+          Hãy chạm nhẹ vào màn hình để mở thước phim và khu vườn ánh sáng mang tên <span class="gold-text" data-bind="girlfriendName">Em</span>.
+        </p>
+
+        <div class="cta-wrapper">
+          <div class="btn-aura"></div>
+          <button id="btn-open-gift" class="royal-btn">
+            <span class="btn-sparkle">🎬</span>
+            <span>Mở Món Quà Đặc Biệt</span>
+          </button>
+        </div>
+        <p class="hint-text">💡 Mẹo: Hãy bật âm lượng điện thoại để trọn vẹn cảm xúc nhé</p>
+      </div>
+    </section>
+
+    <!-- ================= SCENE VIDEO (MỚI): THƯỚC PHIM MỞ ĐẦU ================= -->
+    <section id="scene-video" class="scene">
+      <div class="video-scene-layout">
+        <!-- Ánh sáng hào quang background tinh tế -->
+        <div class="video-ambient-glow"></div>
+
+        <div class="crown-badge">✦ OUR MEMORY • 20 / 10 ✦</div>
+        <h2 id="video-heading" class="section-title">
+          Khoảnh Khắc Dành Riêng Cho <span data-bind="girlfriendName">Em</span>
+        </h2>
+
+        <!-- Khung Cinema Hoàng Gia (tự tương thích cả video dọc 9:16 và ngang 16:9) -->
+        <div class="royal-cinema-frame">
+          <div class="corner-ornament tl"></div>
+          <div class="corner-ornament tr"></div>
+          <div class="corner-ornament bl"></div>
+          <div class="corner-ornament br"></div>
+
+          <video
+            id="intro-video"
+            class="luxury-video"
+            src="video.mp4"
+            controls
+            playsinline
+            webkit-playsinline
+            preload="auto"
+          >
+            <source id="video-source" src="video.mp4" type="video/mp4" />
+            Trình duyệt của bạn không hỗ trợ thẻ video.
+          </video>
+
+          <!-- Thông báo hướng dẫn nếu bạn chưa bỏ file video.mp4 vào thư mục -->
+          <div id="video-fallback-msg" class="video-fallback hidden">
+            <p>📹 <strong>Chưa tìm thấy file <code>video.mp4</code></strong></p>
+            <p class="fallback-sub">
+              Hãy copy video của bạn vào thư mục <code>october-20-love</code> và đặt tên là <strong><code>video.mp4</code></strong> (hoặc dán link video vào phần <code>CONFIG.videoUrl</code> trong <code>script.js</code>).
+            </p>
+          </div>
+
+          <!-- Điều khiển nhanh trên video -->
+          <div class="video-controls-bar">
+            <button id="btn-video-play" class="mini-glass-btn">⏸ Tạm dừng</button>
+            <button id="btn-video-mute" class="mini-glass-btn">🔊 Có tiếng</button>
+          </div>
+        </div>
+
+        <p id="video-caption" class="garden-caption">
+          Xem hết thước phim nhỏ này hoặc bấm nút bên dưới để bước vào khu vườn hoa hồng nhé!
+        </p>
+
+        <div class="scene-actions">
+          <button id="btn-after-video" class="royal-btn">
+            <span>🌹 Bước Vào Khu Vườn Hoa Hồng ➔</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SCENE 2: HOA HỒNG NHUNG 3D 68 CÁNH ================= -->
+    <section id="scene-2" class="scene">
+      <div class="garden-layout">
+        <div class="garden-header">
+          <div class="crown-badge">✦ THE ETERNAL VELVET ROSE ✦</div>
+          <h2 class="section-title">Bông Hồng Của Riêng <span data-bind="girlfriendName">Em</span></h2>
+        </div>
+
+        <!-- Khung lồng kính 3D chứa Canvas Hoa Hồng 68 cánh -->
+        <div class="holo-dome-container" id="rose-interactive-zone">
+          <div class="dome-halo"></div>
+          <div class="crystal-dome">
+            <div class="dome-reflection"></div>
+            <canvas id="rose-canvas"></canvas>
+          </div>
+          <div class="pedestal">
+            <div class="pedestal-plaque">20 • 10 • ETERNAL LOVE</div>
+          </div>
+        </div>
+
+        <p class="garden-caption">
+          68 cánh hồng nhung nở theo tỷ lệ vàng vĩnh cửu — tượng trưng cho từng khoảnh khắc anh trân trọng khi có <span class="gold-text" data-bind="girlfriendName">Em</span>.
+        </p>
+
+        <div class="scene-actions">
+          <button id="btn-rebloom" class="secondary-btn">🌸 Xem hoa nở lại</button>
+          <button id="btn-to-letter" class="royal-btn">
+            <span>💌 Mở Phong Thư Hoàng Gia</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SCENE 3: PHONG THƯ HOÀNG GIA & LÁ THƯ PHÉP THUẬT ================= -->
+    <section id="scene-3" class="scene">
+      <div class="letter-layout">
+        <div class="crown-badge">✦ SECRET LOVE LETTER ✦</div>
+        <h2 class="section-title" id="envelope-title">Chạm vào ấn sáp vàng để mở thư</h2>
+
+        <div id="envelope-stage" class="envelope-stage">
+          <div class="luxury-envelope" id="luxury-envelope">
+            <div class="env-back"></div>
+            <div class="env-letter-peek">
+              <span>Gửi <strong data-bind="girlfriendName">Em</strong>...</span>
+            </div>
+            <div class="env-side-left"></div>
+            <div class="env-side-right"></div>
+            <div class="env-bottom"></div>
+            <div class="env-top-flap"></div>
+            <div class="royal-wax-seal" id="wax-seal">
+              <div class="seal-ring"></div>
+              <span>♥</span>
+            </div>
+          </div>
+        </div>
+
+        <div id="letter-modal" class="letter-modal-wrapper hidden">
+          <div class="royal-letter-card">
+            <div class="corner-ornament tl"></div>
+            <div class="corner-ornament tr"></div>
+            <div class="corner-ornament bl"></div>
+            <div class="corner-ornament br"></div>
+
+            <div class="letter-header">
+              <span class="letter-date">Ngày Phụ Nữ Việt Nam 20 • 10</span>
+              <h3 class="letter-greeting">Gửi <span data-bind="girlfriendName">Em</span> — Người con gái anh thương,</h3>
+            </div>
+
+            <div id="letter-body" class="letter-body"></div>
+
+            <div class="letter-footer">
+              <div class="skip-wrap">
+                <button id="btn-skip-typing" class="text-link-btn">Hiện toàn bộ thư</button>
+              </div>
+              <div class="signature-block">
+                <p class="sig-caption">Mãi yêu và trân trọng em,</p>
+                <p class="sig-name" data-bind="senderName">Anh</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-actions">
+            <button id="btn-to-finale" class="royal-btn">
+              <span>🎆 Bùng Nổ Khoảnh Khắc Cuối</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SCENE 4: ĐẠI TIỆC PHÁO HOA TRÁI TIM 3D ================= -->
+    <section id="scene-4" class="scene">
+      <div class="finale-layout">
+        <div class="heart-nebula-wrap" id="finale-heart-trigger" title="Chạm để bắn pháo hoa trái tim">
+          <canvas id="heart-3d-canvas"></canvas>
+        </div>
+
+        <div class="crown-badge">✦ HAPPY WOMEN'S DAY 20/10 ✦</div>
+        <h2 id="final-message" class="hero-title glow-gold">
+          Anh thật may mắn vì thế giới này có Em
+        </h2>
+        <p id="final-submessage" class="hero-subtitle">
+          Chạm vào bất kỳ đâu trên bầu trời để bắn pháo hoa trái tim dành tặng riêng em nhé!
+        </p>
+
+        <div class="finale-buttons">
+          <button id="btn-mega-fireworks" class="royal-btn">
+            <span>🎇 Bắn Đại Tiệc Pháo Hoa Trái Tim</span>
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
